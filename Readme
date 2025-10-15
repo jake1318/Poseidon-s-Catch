@@ -1,0 +1,130 @@
+# 🍽️ Poseidon's Catch
+
+A modern restaurant web app where guests can **browse the menu**, **read and post reviews**, and **make reservations** — built with a TypeScript-first stack for speed, reliability, and clean DX.
+
+## ✨ Features
+- **Interactive menu** with categories, prices, and details
+- **Reviews** with rating and text, list + create (and optional edit/delete if enabled)
+- **Reservations** with date, time, party size, contact info, and server-side validation
+- **Responsive UI** with dark/light themes
+- **API** endpoints for menu, reviews, and reservations
+
+## 🧰 Tech Stack
+- **Frontend:** React + TypeScript + Vite + Tailwind CSS
+- **Backend:** Node.js + Express + TypeScript
+- **Database:** SQLite (local dev) or PostgreSQL/MySQL via a single `DATABASE_URL`
+- **Tooling:** ESLint, Prettier
+- **Monorepo layout:** `client/` and `server/` at repo root, with Tailwind + TS configs in the root for consistency. :contentReference[oaicite:1]{index=1}
+
+## 📁 Project Structure
+Poseidon-s-Catch/
+├─ client/ # React + TS frontend
+│ ├─ src/
+│ │ ├─ components/
+│ │ ├─ pages/ # Menu, Reviews, Reservations
+│ │ ├─ lib/ # API helpers, types
+│ │ └─ styles/
+│ └─ index.html
+├─ server/ # Express + TS backend (REST API)
+│ ├─ src/
+│ │ ├─ routes/ # /menu, /reviews, /reservations
+│ │ ├─ controllers/
+│ │ ├─ models/ # DB client / ORM
+│ │ └─ index.ts
+│ └─ tsconfig.json
+├─ tailwind.config.ts
+├─ tsconfig.json
+├─ package.json
+└─ README.md
+
+
+## ⚙️ Getting Started
+
+### 1) Clone
+```bash
+git clone https://github.com/jake1318/Poseidon-s-Catch.git
+cd Poseidon-s-Catch
+
+2) Install
+# Frontend
+cd client
+npm install
+
+# Backend
+cd ../server
+npm install
+
+3) Configure env
+
+Create server/.env:
+
+PORT=4000
+DATABASE_URL="file:./dev.db"     # SQLite for local dev OR your Postgres/MySQL URL
+# EMAIL_SMTP_URL=...             # optional if you send confirmation emails
+
+
+If you’re using SQLite, generate the DB (example with Prisma):
+
+# if Prisma is used
+npx prisma migrate dev --name init
+npx prisma db seed # optional
+
+4) Run the app
+# Backend
+cd server
+npm run dev          # starts API at http://localhost:4000
+
+# Frontend (in a second terminal)
+cd ../client
+npm run dev          # starts Vite at http://localhost:5173
+
+🔌 API Overview
+
+All routes prefixed by /api from the frontend.
+
+Menu
+
+GET /api/menu — list menu items
+
+GET /api/menu/:id — get single item
+
+Reviews
+
+GET /api/reviews — list reviews
+
+POST /api/reviews — create { name, rating, comment }
+
+PUT /api/reviews/:id — update (if enabled)
+
+DELETE /api/reviews/:id — delete (if enabled)
+
+Reservations
+
+POST /api/reservations — create { name, email, phone, partySize, date, time, note? }
+
+GET /api/reservations?date=YYYY-MM-DD — list for a day (admin view)
+
+Optional email or on-screen confirmation
+
+Validation: server enforces date/time in the future, reasonable party size, and contact info. Conflict checks can be added to prevent overbooking.
+
+🧪 Scripts
+
+Common scripts you may have (adjust to your package.json):
+
+{
+  "client": {
+    "scripts": {
+      "dev": "vite",
+      "build": "vite build",
+      "preview": "vite preview"
+    }
+  },
+  "server": {
+    "scripts": {
+      "dev": "ts-node-dev --respawn src/index.ts",
+      "build": "tsc -p .",
+      "start": "node dist/index.js"
+    }
+  }
+}
